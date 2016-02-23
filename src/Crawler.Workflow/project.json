@@ -1,0 +1,17 @@
+﻿{
+  "version": "1.0.0-*",
+  "description": "Crawler.Workflow Class Library",
+  "authors": [ "iGilga" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+
+  "frameworks": {
+    "dnx451": { }
+  },
+  "dependencies": {
+    "RestSharp": "105.2.3",
+    "Autofac": "4.0.0-*",
+    "Mapster": "2.1.2"
+  }
+}
