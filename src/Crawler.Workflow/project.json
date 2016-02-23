@@ -1,4 +1,4 @@
-﻿{
+{
   "version": "1.0.0-*",
   "description": "Crawler.Workflow Class Library",
   "authors": [ "iGilga" ],
@@ -7,11 +7,18 @@
   "licenseUrl": "",
 
   "frameworks": {
-    "dnx451": { }
+    "dnx452": {
+      "dependencies": { },
+      "frameworkAssemblies": {
+        "System.Xml": "4.0.0.0",
+        "System.Runtime": "4.0.0.0"
+      }
+    }
   },
   "dependencies": {
-    "RestSharp": "105.2.3",
     "Autofac": "4.0.0-*",
-    "Mapster": "2.1.2"
+    "HtmlAgilityPack.NetCore": "1.4.9",
+    "Mapster": "2.1.2",
+    "RestSharp": "105.2.3"
   }
 }
