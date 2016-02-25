@@ -19,6 +19,8 @@
     "Autofac": "4.0.0-*",
     "HtmlAgilityPack.NetCore": "1.4.9",
     "Mapster": "2.1.2",
+    "Microsoft.Extensions.Configuration.Json": "1.0.0-rc1-final",
+    "NLog": "4.4.0-alpha1",
     "RestSharp": "105.2.3"
   }
 }
