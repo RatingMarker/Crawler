@@ -1,0 +1,7 @@
+﻿{
+  "Url": {
+    "KeywordMicroservice": "http://localhost:5000",
+    "PageMicroservice": "http://localhost:5000",
+    "RatingMicroservice": "http://localhost:5000"
+  }
+}

@@ -1,7 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Autofac;
+using Crawler.Workflow;
+using Crawler.Workflow.Containers;
+using Crawler.Workflow.ExternMicroservices;
+using Crawler.Workflow.Processings;
+using Crawler.Workflow.Services;
+using NLog;
 
 namespace Crawler.ConsoleApp
 {
@@ -9,6 +13,12 @@ namespace Crawler.ConsoleApp
     {
         public static void Main(string[] args)
         {
+            using (var scope = AutofacContainer.Get().BeginLifetimeScope())
+            {
+                var crawlerManage = scope.Resolve<CrawlerManage>();
+
+                crawlerManage.InitializeCrawler();
+            }
         }
     }
 }
