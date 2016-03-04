@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Crawler.Workflow.Configurations;
 using Crawler.Workflow.Models;
 using Crawler.Workflow.ViewModels;
 using Mapster;
+using NLog;
 using RestSharp;
 
 namespace Crawler.Workflow.ExternMicroservices
@@ -22,10 +23,12 @@ namespace Crawler.Workflow.ExternMicroservices
     {
         private readonly IAdapter adapter;
         private readonly IRestClient client;
+        private readonly ILogger logger;
 
-        public PageMicroservice(IAppConfiguration config, IAdapter adapter)
+        public PageMicroservice(IAppConfiguration config, IAdapter adapter, ILogger logger)
         {
             this.adapter = adapter;
+            this.logger = logger;
 
             string baseUrl = config.Get("Url:PageMicroservice");
             client = new RestClient(baseUrl);
@@ -58,11 +61,6 @@ namespace Crawler.Workflow.ExternMicroservices
             return adapter.Adapt<IEnumerable<Page>>(data);
         }
 
-        public int PostPages(IEnumerable<Page> pages)
-        {
-            throw new System.NotImplementedException();
-        }
-
         public void PutPage(Page page)
         {
             int id = page.PageId;
@@ -79,6 +77,15 @@ namespace Crawler.Workflow.ExternMicroservices
             var request = new RestRequest("api/pages", Method.POST);
             request.AddJsonBody(data);
             client.Execute<List<PageViewModel>>(request);
+        }
+
+        public int PostPages(IEnumerable<Page> pages)
+        {
+            var data = adapter.Adapt<IEnumerable<PageViewModel>>(pages);
+            var request = new RestRequest("api/pages/insert", Method.POST);
+            request.AddJsonBody(data);
+            var response = client.Execute<CounterViewModel>(request);
+            return response.Data.Saved;
         }
     }
 }

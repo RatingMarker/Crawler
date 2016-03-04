@@ -24,7 +24,7 @@ namespace Crawler.Workflow.Configurations
             };
             config.AddTarget("file", fileTarget);
 
-            config.LoggingRules.Add(new LoggingRule("*", LogLevel.Info, consoleTarget));
+            config.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, consoleTarget));
             config.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, fileTarget));
 
             LogManager.Configuration = config;

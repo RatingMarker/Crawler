@@ -1,4 +1,5 @@
-﻿using Crawler.Workflow.Configurations;
+﻿using System.Collections.Generic;
+using Crawler.Workflow.Configurations;
 using Crawler.Workflow.Models;
 using Crawler.Workflow.ViewModels;
 using Mapster;
@@ -9,6 +10,7 @@ namespace Crawler.Workflow.ExternMicroservices
     public interface IRatingMicroservice
     {
         void Add(Rating rating);
+        void PostRatings(IEnumerable<Rating> ratings);
     }
 
     public class RatingMicroservice: IRatingMicroservice
@@ -28,6 +30,14 @@ namespace Crawler.Workflow.ExternMicroservices
         {
             var data = adapter.Adapt<RatingViewModel>(rating);
             var request = new RestRequest("/api/ratings", Method.POST);
+            request.AddJsonBody(data);
+            client.Execute(request);
+        }
+
+        public void PostRatings(IEnumerable<Rating> ratings)
+        {
+            var data = adapter.Adapt<IEnumerable<RatingViewModel>>(ratings);
+            var request = new RestRequest("/api/ratings/insert", Method.POST);
             request.AddJsonBody(data);
             client.Execute(request);
         }

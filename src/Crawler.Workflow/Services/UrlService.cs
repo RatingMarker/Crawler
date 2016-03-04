@@ -23,7 +23,7 @@ namespace Crawler.Workflow.Services
             if (page.Key != null
                 && !string.IsNullOrEmpty(content))
             {
-                var ext = Path.GetExtension(page.Key.Uri);
+                var ext = Path.GetExtension(page.Key.Url);
 
                 switch (ext)
                 {
@@ -66,7 +66,7 @@ namespace Crawler.Workflow.Services
 
         private IEnumerable<string> FilteringUrls(IEnumerable<string> urls, Page page)
         {
-            var pageUrl = page.Uri;
+            var pageUrl = page.Url;
 
             var newUrls = new List<string>();
 
