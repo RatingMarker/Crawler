@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Crawler.Workflow.Models;
 using Crawler.Workflow.Processings;
 using Crawler.Workflow.Services;
@@ -50,18 +51,25 @@ namespace Crawler.Workflow
 
             sites = storageService.GetSites();
 
-            ProcessingNewSites();
+            ProcessingSites();
 
             isProcessing = false;
 
             logger.Info("Crawler completed");
         }
 
-        private void ProcessingNewSites()
+        private void ProcessingSites()
         {
             foreach (var site in sites)
             {
-                var pages = storageService.GetPagesByState(site.SiteId, 1);
+                //Get pages with x => x.SiteId == id && x.LastScanDate == null;
+                var fetching = storageService.GetPagesByState(site.SiteId, 2);
+
+                logger.Debug(fetching.Count());
+
+                var pages = fetching.Where(x =>x.Url.EndsWith(".xml")).ToList();
+
+                logger.Debug("Get pages: {0}",pages.Count);
 
                 crawlerProcessing.InitializeProcession(pages);
             }
