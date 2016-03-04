@@ -18,7 +18,7 @@ namespace Crawler.Workflow.ExternMicroservices
         private readonly IAdapter adapter;
         private readonly IRestClient client;
 
-        public RatingMicroservice(IAppConfiguration config, IAdapter adapter)
+        public RatingMicroservice(IConfigurationApp config, IAdapter adapter)
         {
             this.adapter = adapter;
 

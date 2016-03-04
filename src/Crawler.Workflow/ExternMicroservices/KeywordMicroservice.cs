@@ -14,11 +14,11 @@ namespace Crawler.Workflow.ExternMicroservices
 
     public class KeywordMicroservice: IKeywordMicroservice
     {
-        private readonly IAppConfiguration config;
+        private readonly IConfigurationApp config;
         private readonly IAdapter adapter;
         private readonly IRestClient client;
 
-        public KeywordMicroservice(IAppConfiguration config, IAdapter adapter)
+        public KeywordMicroservice(IConfigurationApp config, IAdapter adapter)
         {
             this.adapter = adapter;
 

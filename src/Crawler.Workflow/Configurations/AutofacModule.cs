@@ -47,7 +47,7 @@ namespace Crawler.Workflow.Configurations
 
         private void RegistryComponent(ContainerBuilder builder)
         {
-            builder.RegisterType<AppConfiguration>().As<IAppConfiguration>();
+            builder.RegisterType<ConfigurationApp>().As<IConfigurationApp>();
             builder.RegisterType<Adapter>().As<IAdapter>();
             builder.RegisterType<RestDownloader>().As<IDownloader>();
 

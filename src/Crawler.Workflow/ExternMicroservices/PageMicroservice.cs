@@ -25,7 +25,7 @@ namespace Crawler.Workflow.ExternMicroservices
         private readonly IRestClient client;
         private readonly ILogger logger;
 
-        public PageMicroservice(IAppConfiguration config, IAdapter adapter, ILogger logger)
+        public PageMicroservice(IConfigurationApp config, IAdapter adapter, ILogger logger)
         {
             this.adapter = adapter;
             this.logger = logger;

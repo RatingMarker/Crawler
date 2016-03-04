@@ -2,16 +2,16 @@
 
 namespace Crawler.Workflow.Configurations
 {
-    public interface IAppConfiguration
+    public interface IConfigurationApp
     {
         string Get(string property);
     }
 
-    public class AppConfiguration: IAppConfiguration
+    public class ConfigurationApp: IConfigurationApp
     {
         private readonly IConfiguration configuration;
 
-        public AppConfiguration()
+        public ConfigurationApp()
         {
             var config = new ConfigurationBuilder();
             config.AddJsonFile("config.json");
