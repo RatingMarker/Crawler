@@ -23,14 +23,21 @@ namespace Crawler.Workflow.Configurations
         protected override void Load(ContainerBuilder builder)
         {
             RegistryLogging(builder);
+            RegistryConfiguration(builder);
             RegistryServices(builder);
             RegistryMicroservices(builder);
-            RegistryComponent(builder);
+            RegistryProcessing(builder);
+            RegistryOther(builder);
         }
 
         private void RegistryLogging(ContainerBuilder builder)
         {
             builder.RegisterModule<NLogModule>();
+        }
+
+        private void RegistryConfiguration(ContainerBuilder builder)
+        {
+            builder.RegisterType<ConfigurationApp>().As<IConfigurationApp>();
         }
 
         private void RegistryServices(ContainerBuilder builder)
@@ -45,12 +52,15 @@ namespace Crawler.Workflow.Configurations
             builder.RegisterType<PageMicroservice>().As<IPageMicroservice>();
         }
 
-        private void RegistryComponent(ContainerBuilder builder)
+        private void RegistryOther(ContainerBuilder builder)
         {
-            builder.RegisterType<ConfigurationApp>().As<IConfigurationApp>();
+
             builder.RegisterType<Adapter>().As<IAdapter>();
             builder.RegisterType<RestDownloader>().As<IDownloader>();
+        }
 
+        private void RegistryProcessing(ContainerBuilder builder)
+        {
             builder.RegisterType<CrawlerManage>();
             builder.RegisterType<CrawlerProcessing>().As<ICrawlerProcessing>();
         }
