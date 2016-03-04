@@ -43,7 +43,6 @@ namespace Crawler.Workflow.Configurations
         private void RegistryMicroservices(ContainerBuilder builder)
         {
             builder.RegisterType<PageMicroservice>().As<IPageMicroservice>();
-            builder.RegisterType<KeywordMicroservice>().As<IKeywordMicroservice>();
         }
 
         private void RegistryComponent(ContainerBuilder builder)
