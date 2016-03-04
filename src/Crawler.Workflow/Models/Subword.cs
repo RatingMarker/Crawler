@@ -4,7 +4,6 @@
     {
         public int SubwordId { get; set; }
         public string Name { get; set; }
-        public int PersonId { get; set; }
-        public virtual Keyword Person { get; set; }
+        public int KeywordId { get; set; }
     }
 }
