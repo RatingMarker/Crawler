@@ -11,6 +11,7 @@ namespace Crawler.Workflow.Processings
     {
         private readonly IDownloadService downloadService;
         private readonly ILogger logger;
+        private readonly IRatingService ratingService;
         private readonly IStorageService storageService;
         private readonly IUrlService urlService;
 
@@ -18,11 +19,13 @@ namespace Crawler.Workflow.Processings
             IStorageService storageService,
             IDownloadService downloadService,
             IUrlService urlService,
+            IRatingService ratingService,
             ILogger logger)
         {
             this.storageService = storageService;
             this.downloadService = downloadService;
             this.urlService = urlService;
+            this.ratingService = ratingService;
             this.logger = logger;
         }
 
@@ -59,6 +62,20 @@ namespace Crawler.Workflow.Processings
             string countSaved = SavePagesStorage(newPages);
 
             logger.Debug("Saved pages: " + countSaved);
+
+            //logger.Info("Detecting keywords");
+
+            //var ratings = DetectingKeywords(downloadPage);
+
+            //logger.Info("Founded rank persons: " + ratings.Count());
+
+            //logger.Info("Save new rank persons in Database");
+
+            //countSaved = SavePersonRageRankStorage(ratings);
+
+            //logger.Info("Saved rank persons: " + countSaved);
+
+            //logger.Info("Update current page");
 
             UpdateLastScanDatePage(currentPage);
         }
@@ -106,6 +123,16 @@ namespace Crawler.Workflow.Processings
         private string SavePagesStorage(IEnumerable<Page> pages)
         {
             return storageService.AddPages(pages);
+        }
+
+        private int SavePersonRageRankStorage(IEnumerable<Rating> ratings)
+        {
+            return storageService.AddRatings(ratings);
+        }
+
+        private IEnumerable<Rating> DetectingKeywords(KeyValuePair<Page, string> downloadPage)
+        {
+            return ratingService.GetRatings(downloadPage);
         }
     }
 }

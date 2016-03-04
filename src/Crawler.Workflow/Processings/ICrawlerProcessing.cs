@@ -1,5 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Crawler.Workflow.Models;
+using Crawler.Workflow.Services;
+using NLog;
+using System.Linq;
 
 namespace Crawler.Workflow.Processings
 {
