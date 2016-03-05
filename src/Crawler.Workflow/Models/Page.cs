@@ -11,6 +11,5 @@ namespace Crawler.Workflow.Models
         public DateTime? LastScanDate { get; set; }
         public int SiteId { get; set; }
         public virtual Site Site { get; set; }
-        public virtual ICollection<PersonPageRank> PersonPageRanks { get; set; }
     }
 }
