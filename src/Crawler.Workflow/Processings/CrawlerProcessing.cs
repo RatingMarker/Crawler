@@ -47,35 +47,17 @@ namespace Crawler.Workflow.Processings
 
             logger.Debug("Download completed");
 
-            logger.Debug("Parsing urls");
+            logger.Info("Detecting keywords");
 
-            var urls = FetchingUrlsByPage(downloadPage);
+            var ratings = DetectingKeywords(downloadPage);
 
-            logger.Debug("Founded urls: " + urls.Count());
+            logger.Info("Save new rank persons in Database");
 
-            logger.Debug("Creating pages");
+            string message = SavePersonRageRankStorage(ratings);
 
-            var newPages = CreatePages(currentPage.SiteId, urls);
+            logger.Info("Saved rank persons: " + message);
 
-            logger.Debug("Save new pages in Database");
-
-            string countSaved = SavePagesStorage(newPages);
-
-            logger.Debug("Saved pages: " + countSaved);
-
-            //logger.Info("Detecting keywords");
-
-            //var ratings = DetectingKeywords(downloadPage);
-
-            //logger.Info("Founded rank persons: " + ratings.Count());
-
-            //logger.Info("Save new rank persons in Database");
-
-            //countSaved = SavePersonRageRankStorage(ratings);
-
-            //logger.Info("Saved rank persons: " + countSaved);
-
-            //logger.Info("Update current page");
+            logger.Info("Update current page");
 
             UpdateLastScanDatePage(currentPage);
         }
@@ -96,38 +78,12 @@ namespace Crawler.Workflow.Processings
             storageService.UpdatePage(page);
         }
 
-        private IEnumerable<string> FetchingUrlsByPage(KeyValuePair<Page, string> page)
+        private string SavePersonRageRankStorage(IEnumerable<Rating> ratings)
         {
-            return urlService.GetUrls(page);
-        }
+            int count = ratings.Count();
+            int countSaved = storageService.AddRatings(ratings);
 
-        private IEnumerable<Page> CreatePages(int siteId, IEnumerable<string> urls)
-        {
-            ICollection<Page> pages = new List<Page>();
-
-            foreach (string url in urls)
-            {
-                var page = new Page()
-                {
-                    Url = url,
-                    SiteId = siteId,
-                    FoundDate = DateTime.Now
-                };
-
-                pages.Add(page);
-            }
-
-            return pages;
-        }
-
-        private string SavePagesStorage(IEnumerable<Page> pages)
-        {
-            return storageService.AddPages(pages);
-        }
-
-        private int SavePersonRageRankStorage(IEnumerable<Rating> ratings)
-        {
-            return storageService.AddRatings(ratings);
+            return $"{countSaved} / {count}";
         }
 
         private IEnumerable<Rating> DetectingKeywords(KeyValuePair<Page, string> downloadPage)
