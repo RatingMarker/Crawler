@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Linq;
 using Crawler.Workflow.Models;
 using HtmlAgilityPack;
 using NLog;
-using System.Linq;
 
 namespace Crawler.Workflow.Services
 {
@@ -15,8 +14,8 @@ namespace Crawler.Workflow.Services
 
     public class RatingService: IRatingService
     {
-        private readonly IStorageService storageService;
         private readonly ILogger logger;
+        private readonly IStorageService storageService;
 
         public RatingService(IStorageService storageService, ILogger logger)
         {
@@ -44,14 +43,14 @@ namespace Crawler.Workflow.Services
 
                     foreach (Subword subword in subwords)
                     {
-                            foreach (HtmlNode node in nodes)
+                        foreach (HtmlNode node in nodes)
+                        {
+                            text = node.InnerText;
+                            if (text.Contains(subword.Name))
                             {
-                                text = node.InnerText;
-                                if (text.Contains(subword.Name))
-                                {
-                                    AddRating(ratings, page.Key, subword);
-                                }
+                                AddRating(ratings, page.Key, subword);
                             }
+                        }
                     }
                 }
             }
@@ -74,10 +73,9 @@ namespace Crawler.Workflow.Services
 
             if (rating == null)
             {
-                rating = new Rating() { PageId = page.PageId, KeywordId = subword.KeywordId, JoinDate = DateTime.Today };
+                rating = new Rating() {PageId = page.PageId, KeywordId = subword.KeywordId, JoinDate = DateTime.Today};
                 ratings.Add(rating);
             }
         }
-
     }
 }
