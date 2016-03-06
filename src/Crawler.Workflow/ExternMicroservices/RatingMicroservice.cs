@@ -9,8 +9,8 @@ namespace Crawler.Workflow.ExternMicroservices
 {
     public interface IRatingMicroservice
     {
-        void Add(Rating rating);
-        void PostRatings(IEnumerable<Rating> ratings);
+        void Post(Rating rating);
+        int PostRatings(IEnumerable<Rating> ratings);
     }
 
     public class RatingMicroservice: IRatingMicroservice
@@ -26,7 +26,7 @@ namespace Crawler.Workflow.ExternMicroservices
             client = new RestClient(baseUrl);
         }
 
-        public void Add(Rating rating)
+        public void Post(Rating rating)
         {
             var data = adapter.Adapt<RatingViewModel>(rating);
             var request = new RestRequest("/api/ratings", Method.POST);
@@ -34,12 +34,13 @@ namespace Crawler.Workflow.ExternMicroservices
             client.Execute(request);
         }
 
-        public void PostRatings(IEnumerable<Rating> ratings)
+        public int PostRatings(IEnumerable<Rating> ratings)
         {
             var data = adapter.Adapt<IEnumerable<RatingViewModel>>(ratings);
             var request = new RestRequest("/api/ratings/insert", Method.POST);
             request.AddJsonBody(data);
-            client.Execute(request);
+            var response = client.Execute<CounterViewModel>(request);
+            return response.Data.Saved;
         }
     }
 }
