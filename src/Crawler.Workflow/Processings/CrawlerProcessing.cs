@@ -81,8 +81,11 @@ namespace Crawler.Workflow.Processings
         private string SavePersonRageRankStorage(IEnumerable<Rating> ratings)
         {
             int count = ratings.Count();
-            int countSaved = storageService.AddRatings(ratings);
-
+            int countSaved = 0;
+            if (count > 0)
+            {
+                countSaved = storageService.AddRatings(ratings);
+            }
             return $"{countSaved} / {count}";
         }
 
