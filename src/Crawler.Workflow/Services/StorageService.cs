@@ -14,16 +14,19 @@ namespace Crawler.Workflow.Services
         void UpdatePage(Page page);
         string AddPages(IEnumerable<Page> pages);
         IEnumerable<Subword> GetSubwords();
+        int AddRatings(IEnumerable<Rating> ratings);
     }
 
     public class StorageService: IStorageService
     {
         private readonly IKeywordMicroservice keywordMicroservice;
         private readonly IPageMicroservice pageMicroservice;
+        private readonly IRatingMicroservice ratingMicroservice;
 
         public StorageService(
             IPageMicroservice pageMicroservice,
-            IKeywordMicroservice keywordMicroservice)
+            IKeywordMicroservice keywordMicroservice,
+            IRatingMicroservice ratingMicroservice)
         {
             if (pageMicroservice == null)
             {
@@ -33,8 +36,13 @@ namespace Crawler.Workflow.Services
             {
                 throw new ArgumentNullException(nameof(keywordMicroservice));
             }
+            if (ratingMicroservice == null)
+            {
+                throw new ArgumentNullException(nameof(ratingMicroservice));
+            }
             this.pageMicroservice = pageMicroservice;
             this.keywordMicroservice = keywordMicroservice;
+            this.ratingMicroservice = ratingMicroservice;
         }
 
         public IEnumerable<Site> GetSites() => pageMicroservice.GetSites();
@@ -68,6 +76,11 @@ namespace Crawler.Workflow.Services
         public IEnumerable<Subword> GetSubwords()
         {
             return keywordMicroservice.GetAllSubwords();
+        }
+
+        public int AddRatings(IEnumerable<Rating> ratings)
+        {
+            return ratingMicroservice.PostRatings(ratings);
         }
     }
 }
