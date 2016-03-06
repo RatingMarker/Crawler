@@ -38,12 +38,14 @@ namespace Crawler.Workflow.Configurations
             builder.RegisterType<DownloadService>().As<IDownloadService>();
             builder.RegisterType<StorageService>().As<IStorageService>();
             builder.RegisterType<UrlService>().As<IUrlService>();
+            builder.RegisterType<RatingService>().As<IRatingService>();
         }
 
         private void RegistryMicroservices(ContainerBuilder builder)
         {
             builder.RegisterType<PageMicroservice>().As<IPageMicroservice>();
             builder.RegisterType<KeywordMicroservice>().As<IKeywordMicroservice>();
+            builder.RegisterType<RatingMicroservice>().As<IRatingMicroservice>();
         }
 
         private void RegistryComponent(ContainerBuilder builder)
