@@ -8,16 +8,12 @@
 
   "frameworks": {
     "dnx452": {
-      "dependencies": { },
-      "frameworkAssemblies": {
-        "System.Xml": "4.0.0.0",
-        "System.Runtime": "4.0.0.0"
-      }
+      "dependencies": { }
     }
   },
   "dependencies": {
     "Autofac": "4.0.0-*",
-    "HtmlAgilityPack.NetCore": "1.4.9",
+    "HtmlAgilityPack.NetCore": "1.4.9.2",
     "Mapster": "2.1.2",
     "Microsoft.Extensions.Configuration.Json": "1.0.0-rc1-final",
     "NLog": "4.4.0-alpha1",
