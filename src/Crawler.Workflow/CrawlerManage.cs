@@ -63,13 +63,9 @@ namespace Crawler.Workflow
             foreach (var site in sites)
             {
                 //Get pages with x => x.SiteId == id && x.LastScanDate == null;
-                var fetching = storageService.GetPagesByState(site.SiteId, 2);
+                var pages = storageService.GetPagesByState(site.SiteId, 3);
 
-                logger.Debug(fetching.Count());
-
-                var pages = fetching.Where(x =>x.Url.EndsWith(".xml")).ToList();
-
-                logger.Debug("Get pages: {0}",pages.Count);
+                logger.Debug("Get pages: {0}", pages.Count());
 
                 crawlerProcessing.InitializeProcession(pages);
             }
