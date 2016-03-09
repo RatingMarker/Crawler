@@ -16,22 +16,23 @@ namespace Crawler.Workflow.Dowmloaders
 
             try
             {
-                var restClient = new RestClient(url);
+                var client = new RestClient(url);
 
-                var restRequest = new RestRequest(Method.GET);
+                var request = new RestRequest(Method.GET);
 
-                var restResponse = restClient.Execute(restRequest);
+                var response = client.Execute(request);
 
-                var buffer = restResponse.RawBytes;
-
-                if (restResponse.ContentType != null)
+                if (response.ResponseStatus != ResponseStatus.Error)
                 {
-                    charSet = new ContentType(restResponse.ContentType).CharSet ?? charSet;
+                    var buffer = response.RawBytes;
+
+                    if (response.ContentType != null)
+                    {
+                        charSet = new ContentType(response.ContentType).CharSet ?? charSet;
+                    }
+
+                    content = Encoding.GetEncoding(charSet).GetString(buffer);
                 }
-
-                content = Encoding.GetEncoding(charSet).GetString(buffer);
-
-                return content;
             }
             catch (Exception)
             {
