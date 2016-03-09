@@ -1,36 +1,52 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text.RegularExpressions;
+using static System.String;
 
 namespace Crawler.Workflow.Parsers
 {
-    public class RobotsTxtParser : IParser
+    public interface IRobotsTxtParser
     {
-        public IEnumerable<string> GetUrls(string content)
-        {
-            List<string> urls = new List<string>();
-            string linkPattern = @"((www\.|(http|https|ftp|news|file)+\:\/\/)[_.a-z0-9-]+\.[a-z0-9\/_:@=.+?,##%&~-]*)";
+        IEnumerable<string> GetSitemaps(string content);
+    }
 
-            try
+    public class RobotsTxtParser: IRobotsTxtParser
+    {
+        public IEnumerable<string> GetSitemaps(string content)
+        {
+            ICollection<string> sitemaps = new Collection<string>();
+
+            string[] lines = content.Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (var line in lines)
             {
-                var match = Regex.Match(
-                    content,
-                    linkPattern,
-                    RegexOptions.IgnoreCase | RegexOptions.Compiled,
-                    TimeSpan.FromSeconds(1));
-                while (match.Success)
+                if (line.Contains("Sitemap"))
                 {
-                    urls.Add(match.Groups[1].ToString());
-                    match = match.NextMatch();
+                    var url = GetValue(line);
+                    if (url.EndsWith(".xml"))
+                    {
+                        sitemaps.Add(url);
+                    }
                 }
             }
-            catch (RegexMatchTimeoutException)
+
+            return sitemaps.Distinct();
+        }
+
+        private string GetValue(string line)
+        {
+            string url = Empty;
+
+            var index = line.IndexOf(':');
+            if (index == -1)
             {
-                Console.WriteLine("Ничего не найдено.");
+                return Empty;
             }
 
-            return urls.Distinct();
+            url = line.Substring(index + 1).Trim();
+
+            return url;
         }
     }
 }
