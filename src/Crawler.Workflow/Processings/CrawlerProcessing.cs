@@ -11,7 +11,6 @@ namespace Crawler.Workflow.Processings
     {
         private readonly IDownloadService downloadService;
         private readonly ILogger logger;
-        private readonly IRatingService ratingService;
         private readonly IStorageService storageService;
         private readonly IUrlService urlService;
 
@@ -19,13 +18,11 @@ namespace Crawler.Workflow.Processings
             IStorageService storageService,
             IDownloadService downloadService,
             IUrlService urlService,
-            IRatingService ratingService,
             ILogger logger)
         {
             this.storageService = storageService;
             this.downloadService = downloadService;
             this.urlService = urlService;
-            this.ratingService = ratingService;
             this.logger = logger;
         }
 
@@ -41,64 +38,62 @@ namespace Crawler.Workflow.Processings
         {
             var currentPage = page;
 
+            var url = BuildRobotsUrl(currentPage.Url);
+
             logger.Debug("Download page");
 
-            var downloadPage = Download(page);
+            var downloadContent = Download(url);
 
             logger.Debug("Download completed");
 
-            logger.Debug("Parsing urls");
+            if (!string.IsNullOrEmpty(downloadContent))
+            {
+                logger.Debug("Parsing sitemap");
 
-            var urls = FetchingUrlsByPage(downloadPage);
+                var urls = FetchingSitemapByContent(downloadContent);
 
-            logger.Debug("Founded urls: " + urls.Count());
+                logger.Debug("Founded sitemap: " + urls.Count());
 
-            logger.Debug("Creating pages");
+                if (urls.Any())
+                {
+                    logger.Debug("Creating pages");
 
-            var newPages = CreatePages(currentPage.SiteId, urls);
+                    var newPages = CreatePages(currentPage.SiteId, urls);
 
-            logger.Debug("Save new pages in Database");
+                    logger.Debug("Save new pages in Database");
 
-            string countSaved = SavePagesStorage(newPages);
+                    string countSaved = SavePagesStorage(newPages);
 
-            logger.Debug("Saved pages: " + countSaved);
+                    logger.Debug("Saved pages: " + countSaved);
+                }
+            }
 
-            //logger.Info("Detecting keywords");
+            logger.Info("Update current page");
 
-            //var ratings = DetectingKeywords(downloadPage);
-
-            //logger.Info("Founded rank persons: " + ratings.Count());
-
-            //logger.Info("Save new rank persons in Database");
-
-            //countSaved = SavePersonRageRankStorage(ratings);
-
-            //logger.Info("Saved rank persons: " + countSaved);
-
-            //logger.Info("Update current page");
+            currentPage.FoundDate = DateTime.Now;
 
             UpdateLastScanDatePage(currentPage);
         }
 
-        private KeyValuePair<Page, string> Download(Page page)
+        private string BuildRobotsUrl(string baseurl)
         {
-            var content = downloadService.Download(page.Url);
+            Uri baseUri = new Uri(baseurl);
+            return new Uri(baseUri, "/robots.txt").AbsoluteUri;
+        }
 
-            page.LastScanDate = DateTime.Now;
+        private string Download(string url)
+        {
+            return downloadService.Download(url);
+        }
 
-            var downloadPage = new KeyValuePair<Page, string>(page, content);
-
-            return downloadPage;
+        private IEnumerable<string> FetchingSitemapByContent(string content)
+        {
+            return urlService.GetSitemap(content);
         }
 
         private void UpdateLastScanDatePage(Page page)
         {
             storageService.UpdatePage(page);
-        }
-
-        private IEnumerable<string> FetchingUrlsByPage(KeyValuePair<Page, string> page)
-        {
-            return urlService.GetUrls(page);
         }
 
         private IEnumerable<Page> CreatePages(int siteId, IEnumerable<string> urls)
@@ -123,16 +118,6 @@ namespace Crawler.Workflow.Processings
         private string SavePagesStorage(IEnumerable<Page> pages)
         {
             return storageService.AddPages(pages);
-        }
-
-        private int SavePersonRageRankStorage(IEnumerable<Rating> ratings)
-        {
-            return storageService.AddRatings(ratings);
-        }
-
-        private IEnumerable<Rating> DetectingKeywords(KeyValuePair<Page, string> downloadPage)
-        {
-            return ratingService.GetRatings(downloadPage);
         }
     }
 }
