@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Crawler.Workflow.Models;
 using Crawler.Workflow.Processings;
@@ -62,14 +63,10 @@ namespace Crawler.Workflow
         {
             foreach (var site in sites)
             {
-                //Get pages with x => x.SiteId == id && x.LastScanDate == null;
-                var fetching = storageService.GetPagesByState(site.SiteId, 2);
+                //Get pages with x => x.SiteId == id && x.FoundDate == null;
+                var pages = storageService.GetPagesByState(site.SiteId, 1);
 
-                logger.Debug(fetching.Count());
-
-                var pages = fetching.Where(x =>x.Url.EndsWith(".xml")).ToList();
-
-                logger.Debug("Get pages: {0}",pages.Count);
+                logger.Debug($"Get pages by site {site.Name}: {pages.Count()}");
 
                 crawlerProcessing.InitializeProcession(pages);
             }
